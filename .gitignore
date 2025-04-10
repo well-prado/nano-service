@@ -139,3 +139,6 @@ dist
 # Other
 .vscode
 .DS_store
+
+# Information to LLMs
+instructions.md
