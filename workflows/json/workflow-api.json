@@ -1,0 +1,24 @@
+{
+  "name": "Workflow API",
+  "description": "API endpoint to fetch available workflows",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "GET",
+      "path": "/api/workflows",
+      "accept": "application/json"
+    }
+  },
+  "steps": [
+    {
+      "name": "get-workflows",
+      "node": "workflow-docs",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "get-workflows": {
+      "inputs": {}
+    }
+  }
+} 

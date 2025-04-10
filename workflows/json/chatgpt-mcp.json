@@ -1,0 +1,150 @@
+{
+  "name": "ChatGPT with MCP",
+  "description": "ChatGPT-like UI for interacting with OpenAI models and MCP servers",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "*",
+      "path": "/:function?",
+      "accept": "application/json"
+    }
+  },
+  "steps": [
+    {
+      "name": "filter-request",
+      "node": "@nanoservice-ts/if-else",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "filter-request": {
+      "conditions": [
+        {
+          "type": "if",
+          "steps": [
+            {
+              "name": "chatgpt-ui",
+              "node": "chatgpt-ui",
+              "type": "module"
+            }
+          ],
+          "condition": "ctx.request.method.toLowerCase() === \"get\" && ctx.request.params.function === undefined"
+        },
+        {
+          "type": "if",
+          "steps": [
+            {
+              "name": "get-workflows",
+              "node": "mapper",
+              "type": "module"
+            }
+          ],
+          "condition": "ctx.request.method.toLowerCase() === \"get\" && ctx.request.params.function === \"workflows\""
+        },
+        {
+          "type": "if",
+          "steps": [
+            {
+              "name": "list-mcp-servers",
+              "node": "mapper",
+              "type": "module"
+            }
+          ],
+          "condition": "ctx.request.method.toLowerCase() === \"get\" && ctx.request.params.function === \"mcp-servers\""
+        },
+        {
+          "type": "if",
+          "steps": [
+            {
+              "name": "complete-chat-mcp",
+              "node": "mcp-client",
+              "type": "module"
+            }
+          ],
+          "condition": "ctx.request.method.toLowerCase() === \"post\" && ctx.request.params.function === \"mcp-chat-completion\""
+        },
+        {
+          "type": "if",
+          "steps": [
+            {
+              "name": "complete-chat",
+              "node": "openai",
+              "type": "module"
+            }
+          ],
+          "condition": "ctx.request.method.toLowerCase() === \"post\" && ctx.request.params.function === \"chat-completion\""
+        },
+        {
+          "type": "else",
+          "steps": [
+            {
+              "name": "method-not-allowed",
+              "node": "error",
+              "type": "module"
+            }
+          ]
+        }
+      ]
+    },
+    "chatgpt-ui": {
+      "inputs": {
+        "title": "Nanoservice ChatGPT Interface with MCP Support",
+        "model": "gpt-4o",
+        "workflow_docs": true
+      }
+    },
+    "get-workflows": {
+      "inputs": {
+        "model": {
+          "workflows": [
+            { "name": "ChatGPT Interface", "description": "ChatGPT-like UI for interacting with OpenAI models" },
+            { "name": "ChatGPT with MCP", "description": "ChatGPT interface with MCP server integration" },
+            { "name": "Auto-generated MCP Server", "description": "MCP server with tools for AI integration" },
+            { "name": "Weather API", "description": "Get weather information for a city" },
+            { "name": "Database Query", "description": "Execute database queries" }
+          ]
+        }
+      }
+    },
+    "list-mcp-servers": {
+      "inputs": {
+        "model": {
+          "mcp_servers": [
+            { 
+              "name": "Local MCP Server", 
+              "url": "/auto-mcp-server", 
+              "description": "Local MCP server with weather and calculator tools",
+              "tools": [
+                { "name": "weather", "description": "Get weather information for a city" },
+                { "name": "calculator", "description": "Perform basic arithmetic calculations" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "complete-chat-mcp": {
+      "inputs": {
+        "serverUrl": "${ctx.request.body.serverUrl}",
+        "openaiApiKey": "${ctx.request.body.apiKey}",
+        "anthropicApiKey": "${ctx.request.body.anthropicApiKey}",
+        "model": "${ctx.request.body.model}",
+        "messages": "js/ctx.request.body.messages",
+        "useClaudeModel": "${ctx.request.body.useClaudeModel}"
+      }
+    },
+    "complete-chat": {
+      "inputs": {
+        "apiKey": "${ctx.request.body.apiKey}",
+        "model": "${ctx.request.body.model}",
+        "messages": "js/ctx.request.body.messages",
+        "temperature": 0.7
+      }
+    },
+    "method-not-allowed": {
+      "inputs": {
+        "message": "Invalid HTTP method or function"
+      }
+    }
+  }
+} 

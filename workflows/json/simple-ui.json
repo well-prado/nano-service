@@ -1,0 +1,27 @@
+{
+  "name": "Simple MCP UI",
+  "description": "Basic UI for testing MCP tools",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "GET",
+      "path": "/",
+      "accept": "text/html"
+    }
+  },
+  "steps": [
+    {
+      "name": "render-ui",
+      "node": "workflow-ui",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "render-ui": {
+      "inputs": {
+        "title": "MCP Debug Console",
+        "content": "<div class='card'><h3>Weather Tool</h3><form id='weather-form'><label for='city'>City:</label><input type='text' id='city' name='city'><button type='submit'>Get Weather</button></form><pre id='weather-result'></pre></div><div class='card'><h3>Calculator</h3><form id='calc-form'><label for='expression'>Expression:</label><input type='text' id='expression' name='expression' placeholder='2 + 3 * 4'><button type='submit'>Calculate</button></form><pre id='calc-result'></pre></div><script>document.getElementById('weather-form').addEventListener('submit', async function(e) { e.preventDefault(); const city = document.getElementById('city').value; try { const response = await fetch('/simple-mcp/execute', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'weather', parameters: { city } }) }); const result = await response.json(); document.getElementById('weather-result').textContent = JSON.stringify(result, null, 2); } catch(err) { document.getElementById('weather-result').textContent = 'Error: ' + err.message; } }); document.getElementById('calc-form').addEventListener('submit', async function(e) { e.preventDefault(); const expression = document.getElementById('expression').value; try { const response = await fetch('/simple-mcp/execute', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'calculator', parameters: { expression } }) }); const result = await response.json(); document.getElementById('calc-result').textContent = JSON.stringify(result, null, 2); } catch(err) { document.getElementById('calc-result').textContent = 'Error: ' + err.message; } });</script>"
+      }
+    }
+  }
+} 

@@ -1,0 +1,54 @@
+{
+  "name": "MCP Execute Operation",
+  "description": "Executes MCP tools",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "POST",
+      "path": "/",
+      "accept": "application/json"
+    }
+  },
+  "steps": [
+    {
+      "name": "mcp-execute",
+      "node": "mcp-server",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "mcp-execute": {
+      "inputs": {
+        "debug_mode": true,
+        "tools": [
+          {
+            "name": "weather",
+            "description": "Get weather information for a city",
+            "schema": {
+              "city": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "City name to get weather for"
+              }
+            },
+            "implementation": "return { city: inputs.city, temperature: 22, condition: 'Sunny', humidity: 45 };"
+          },
+          {
+            "name": "calculator",
+            "description": "Perform basic arithmetic calculations",
+            "schema": {
+              "expression": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "Mathematical expression to evaluate (e.g., '2 + 3 * 4')"
+              }
+            },
+            "implementation": "try { return { result: eval(inputs.expression) }; } catch (error) { return { error: error.message }; }"
+          }
+        ]
+      }
+    }
+  }
+} 

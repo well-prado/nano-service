@@ -1,0 +1,53 @@
+{
+  "name": "Custom MCP Server",
+  "description": "A simple MCP server without if-else conditions",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "GET",
+      "path": "/",
+      "accept": "text/html"
+    }
+  },
+  "steps": [
+    {
+      "name": "mcp-ui",
+      "node": "mcp-server-custom-ui",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "mcp-ui": {
+      "inputs": {
+        "title": "Custom MCP Dashboard",
+        "base_path": "/execute",
+        "tools": [
+          {
+            "name": "weather",
+            "description": "Get weather information for a city",
+            "schema": {
+              "city": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "City name to get weather for"
+              }
+            }
+          },
+          {
+            "name": "calculator",
+            "description": "Perform basic arithmetic calculations",
+            "schema": {
+              "expression": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "Mathematical expression to evaluate (e.g., '2 + 3 * 4')"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

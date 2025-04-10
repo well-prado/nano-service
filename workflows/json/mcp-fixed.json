@@ -1,0 +1,53 @@
+{
+  "name": "MCP Fixed Server",
+  "description": "MCP server with explicit URL routes for UI and API operations",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "*",
+      "path": "/",
+      "accept": "text/html"
+    }
+  },
+  "steps": [
+    {
+      "name": "mcp-ui",
+      "node": "mcp-server-custom-ui",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "mcp-ui": {
+      "inputs": {
+        "title": "MCP Fixed Dashboard",
+        "base_path": "/execute.json",
+        "tools": [
+          {
+            "name": "weather",
+            "description": "Get weather information for a city",
+            "schema": {
+              "city": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "City name to get weather for"
+              }
+            }
+          },
+          {
+            "name": "calculator",
+            "description": "Perform basic arithmetic calculations",
+            "schema": {
+              "expression": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "Mathematical expression to evaluate (e.g., '2 + 3 * 4')"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+} 

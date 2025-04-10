@@ -1,0 +1,54 @@
+{
+  "name": "MCP Tools Listing",
+  "description": "Lists available MCP tools",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "*",
+      "path": "/",
+      "accept": "application/json"
+    }
+  },
+  "steps": [
+    {
+      "name": "list-tools",
+      "node": "mcp-server",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "list-tools": {
+      "inputs": {
+        "debug_mode": true,
+        "tools": [
+          {
+            "name": "weather",
+            "description": "Get weather information for a city",
+            "schema": {
+              "city": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "City name to get weather for"
+              }
+            },
+            "implementation": "const city = inputs.city || 'New York'; console.log(`Getting weather for: ${city}`); const cityLower = city.toLowerCase(); let temp, condition, humidity; if (cityLower.includes('new york')) { temp = 20; condition = 'Partly Cloudy'; humidity = 65; } else if (cityLower.includes('london')) { temp = 15; condition = 'Rainy'; humidity = 80; } else if (cityLower.includes('tokyo')) { temp = 25; condition = 'Clear'; humidity = 70; } else if (cityLower.includes('sydney')) { temp = 22; condition = 'Sunny'; humidity = 60; } else if (cityLower.includes('toronto')) { temp = 18; condition = 'Cloudy'; humidity = 75; } else if (cityLower.includes('paris')) { temp = 17; condition = 'Light Rain'; humidity = 85; } else { temp = 22; condition = 'Sunny'; humidity = 45; } return { city: city, temperature: temp, condition: condition, humidity: humidity };"
+          },
+          {
+            "name": "calculator",
+            "description": "Perform basic arithmetic calculations",
+            "schema": {
+              "expression": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "Mathematical expression to evaluate (e.g., '2 + 3 * 4')"
+              }
+            },
+            "implementation": "try { return { result: eval(inputs.expression) }; } catch (error) { return { error: error.message }; }"
+          }
+        ]
+      }
+    }
+  }
+} 

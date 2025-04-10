@@ -1,0 +1,54 @@
+{
+  "name": "Simple MCP Server",
+  "description": "Basic MCP server with tool execution",
+  "version": "1.0.0",
+  "trigger": {
+    "http": {
+      "method": "*",
+      "path": "/:function?",
+      "accept": "application/json"
+    }
+  },
+  "steps": [
+    {
+      "name": "api-function",
+      "node": "mcp-server",
+      "type": "module"
+    }
+  ],
+  "nodes": {
+    "api-function": {
+      "inputs": {
+        "debug_mode": true,
+        "tools": [
+          {
+            "name": "weather",
+            "description": "Get weather information for a city",
+            "schema": {
+              "city": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "City name to get weather for"
+              }
+            },
+            "implementation": "return { city: inputs.city, temperature: 22, condition: 'Sunny', humidity: 45 };"
+          },
+          {
+            "name": "calculator",
+            "description": "Perform basic arithmetic calculations",
+            "schema": {
+              "expression": {
+                "type": {
+                  "type": "string"
+                },
+                "description": "Mathematical expression to evaluate (e.g., '2 + 3 * 4')"
+              }
+            },
+            "implementation": "try { return { result: eval(inputs.expression) }; } catch (error) { return { error: error.message }; }"
+          }
+        ]
+      }
+    }
+  }
+} 

@@ -1,0 +1,22 @@
+name: YAML Weather Tool
+description: Get weather information for a city (YAML version)
+version: 1.0.0
+trigger:
+  http:
+    method: POST
+    path: weather-tool-yaml
+    accept: application/json
+steps:
+  - name: get-weather
+    node: mapper
+    type: module
+nodes:
+  get-weather:
+    inputs:
+      model:
+        city: "${ctx.request.body.city}"
+        temperature: 22
+        condition: Sunny
+        humidity: 45
+        wind: 5 mph
+        format: YAML 
